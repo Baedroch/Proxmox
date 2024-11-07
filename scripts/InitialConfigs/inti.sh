@@ -27,8 +27,7 @@ sed -i '1i # disable enterprise' "$ceph_file_path"
 sed -i 's|^deb https://enterprise.proxmox.com/debian/ceph-quincy|#&|' "$ceph_file_path"
 
 # Update the system
-update -y
-upgrade -y
+apt update -y && apt upgrade -y
 
 # Enable IOMMU
 #comment out for configuration purposes
@@ -41,7 +40,9 @@ sed -i '/^#\?GRUB_CMDLINE_LINUX_DEFAULT="quiet"/a\GRUB_CMDLINE_LINUX_DEFAULT="qu
 update-grub
 
 # Edit Kernel Modules
-sed -i '/^$/d' /etc/modules
-echo -e "\n$kernel_content" | tee -a /etc/modules > /dev/null
+sed -i '/^$/d' /etc/modules && echo -e "\n$kernel_content" | tee -a /etc/modules > /dev/null
+
+# Prevent subscription warning from appearing upon login to web gui
+sed -Ezi.bak "s/(function\(orig_cmd\(\)\) \{)/\1\n\torig\(\);\n\treturn;/g" "/usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js" && systemctl restart pveproxy.service
 
 reboot
