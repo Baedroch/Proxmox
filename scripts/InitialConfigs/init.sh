@@ -43,6 +43,6 @@ update-grub
 sed -i '/^$/d' /etc/modules && echo -e "\n$kernel_content" | tee -a /etc/modules > /dev/null
 
 # Prevent subscription warning from appearing upon login to web gui
-sed -Ezi.bak "s/(function\(orig_cmd\(\)\) \{)/\1\n\torig\(\);\n\treturn;/g" "/usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js" && systemctl restart pveproxy.service
+sed -Ezi.bak "s/(function\(orig_cmd\) \{)/\1\n\torig\(\);\n\treturn;/g" "/usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js" && systemctl restart pveproxy.service
 
 reboot
